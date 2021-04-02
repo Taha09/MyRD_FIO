@@ -1,0 +1,78 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>ArcGIS JavaScript Tutorials: Coronavirus Map</title>
+  <style>
+    html, body, #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+  
+    <link rel="stylesheet" href="https://js.arcgis.com/4.14/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.14/"></script>
+  
+  <script>  
+    require([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/widgets/Search",
+      "esri/widgets/CoordinateConversion",
+      "esri/layers/FeatureLayer"
+    ], function(Map, SceneView, Search, CoordinateConversion, FeatureLayer) {
+      var map = new Map({
+        basemap: "streets-night-vector",
+        // ground: "world-elevation"  // show elevation
+      });
+      
+      var coronaLayer = new FeatureLayer(
+      {
+        url: "https://services1.arcgis.com/0MSEUqKaxRlEPj5g/arcgis/rest/services/Coronavirus_2019_nCoV_Cases/FeatureServer/1",
+        popupTemplate: {
+          title: "Coronavirus Cases",
+          content: "Confirmed: {Confirmed}<br> Deaths: {Deaths}<br>Recovered: {Recovered}"
+        }
+      });
+     
+      map.add(coronaLayer,0);
+
+      var view = new SceneView({
+        container: "viewDiv",
+        map: map,
+        center: [-10, 35],
+        zoom: 1,
+        // camera: {
+        //   position: {
+        //     x:-118.243705,
+        //     y: 33.7,
+        //     z: 50000
+        //   },
+        //   tilt: 65
+        // }
+      });
+
+      var x = document.getElementById("demo");
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else {
+    x.innerHTML = "Geolocation is not supported by this browser.";
+  }
+}
+
+function showPosition(position) {
+  x.innerHTML = "Latitude: " + position.coords.latitude +
+  "<br>Longitude: " + position.coords.longitude;
+}
+      
+    });
+  </script>
+</script>
+</head>
+<body>
+  <div id="viewDiv"></div>
+</body>
+</html> 
